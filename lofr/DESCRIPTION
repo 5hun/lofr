@@ -1,0 +1,16 @@
+Package: lofr
+Version: 0.1
+Date: 2016-08-16
+Title: Local Outlier Factor for R
+Authors@R: c(
+    person("Shunsuke", "Naruse", ,"nkjnpi@gmail.com", c("aut", "cre")))
+Depends:
+    R (>= 3.3.1),
+    FNN,
+    parallel
+Suggests: 
+Description: NA
+License: MIT
+URL: https://github.com/5hun/lofr
+BugReports: https://github.com/5hun/lofr/issues
+RoxygenNote: 5.0.1
