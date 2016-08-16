@@ -4,7 +4,7 @@
 \alias{predict.lofmodel}
 \title{Calculate local outlier factor.}
 \usage{
-\method{predict}{lofmodel}(object, newdata = NULL, nparallel = 1)
+\method{predict}{lofmodel}(object, newdata = NULL, nparallel = 1, ...)
 }
 \arguments{
 \item{object}{a value of "\code{lofmodel}".}
@@ -12,6 +12,8 @@
 \item{newdata}{optional, a matrix to calculate LOF. If omitted, the data given at "\code{lofmodel}" is used.}
 
 \item{nparallel}{optional, the number of cores to be used for parallel computing.}
+
+\item{...}{Additional optional arguments. At present no optional arguments are used.}
 }
 \value{
 a matrix with the local outlier factor of each observation as rows and each k value as columns

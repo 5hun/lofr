@@ -6,6 +6,7 @@
 #' @name lofr
 #' @importFrom FNN get.knn get.knnx
 #' @importFrom parallel makeCluster clusterExport parLapply stopCluster
+#' @importFrom methods is
 NULL
 
 # library(FNN)
@@ -41,7 +42,7 @@ NULL
   return(lrd)
 }
 
-#' Make a model object for \code{\link{predict.lof}}.
+#' Make a model object for \code{\link{predict.lofmodel}}.
 #'
 #' @param data a matrix.
 #' @param k.min mininum value of k.
@@ -133,6 +134,7 @@ lofmodel <- function(data, k.min=1, k.max=10, knn.args=list()){
 #' @param object a value of "\code{lofmodel}".
 #' @param newdata optional, a matrix to calculate LOF. If omitted, the data given at "\code{lofmodel}" is used.
 #' @param nparallel optional, the number of cores to be used for parallel computing.
+#' @param ... Additional optional arguments. At present no optional arguments are used.
 #'
 #' @return a matrix with the local outlier factor of each observation as rows and each k value as columns
 #'
@@ -149,7 +151,7 @@ lofmodel <- function(data, k.min=1, k.max=10, knn.args=list()){
 #' lof2 <- predict(mod, dat2) # local outlier factor for dat2
 #'
 #' @export
-predict.lofmodel <- function(object, newdata=NULL, nparallel=1){
+predict.lofmodel <- function(object, newdata=NULL, nparallel=1, ...){
   stopifnot(is(object, .LOFMODEL.CLSNAME))
   if(is.null(newdata)){
     stopifnot(nparallel == 1)

@@ -7,10 +7,11 @@ Authors@R: c(
 Depends:
     R (>= 3.3.1),
     FNN,
-    parallel
+    parallel,
+    methods
 Suggests: 
-Description: NA
-License: MIT
+Description: Local Outlier Factor for R.
+License: MIT + file LICENSE
 URL: https://github.com/5hun/lofr
 BugReports: https://github.com/5hun/lofr/issues
 RoxygenNote: 5.0.1

@@ -2,7 +2,7 @@
 % Please edit documentation in R/lofr.R
 \name{lofmodel}
 \alias{lofmodel}
-\title{Make a model object for \code{\link{predict.lof}}.}
+\title{Make a model object for \code{\link{predict.lofmodel}}.}
 \usage{
 lofmodel(data, k.min = 1, k.max = 10, knn.args = list())
 }
@@ -19,7 +19,7 @@ lofmodel(data, k.min = 1, k.max = 10, knn.args = list())
 a list with class "lodmodel".
 }
 \description{
-Make a model object for \code{\link{predict.lof}}.
+Make a model object for \code{\link{predict.lofmodel}}.
 }
 \examples{
 index <- sample(1:150, 100)
