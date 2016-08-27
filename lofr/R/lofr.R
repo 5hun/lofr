@@ -14,21 +14,23 @@ NULL
 
 .LOFMODEL.CLSNAME <- "lofmodel"
 
-.calc.lrd <- function(nn.res, k.min, k.max){
-  # lrd を計算する
-  # nn.res get.knnx の返り値
-  # k.min k の最小値
-  # k.max k の最大値
+.calc.lrd <- function(nn.res, k.min, k.max, nn.res.mod=NULL){
   stopifnot(k.min <= k.max)
   stopifnot(k.min >= 1)
   stopifnot(k.max < nrow(nn.res$nn.index))
   stopifnot(all(dim(nn.res$nn.index) == dim(nn.res$nn.dist)))
   stopifnot(ncol(nn.res$nn.index) == k.max)
+  if(is.null(nn.res.mod)){
+    nn.res.mod <- nn.res
+  }
+  stopifnot(all(dim(nn.res.mod$nn.index) == dim(nn.res.mod$nn.dist)))
+  stopifnot(ncol(nn.res.mod$nn.index) == k.max)
+  stopifnot(all(max(nn.res$nn.index) >= nrow(nn.res.mod$nn.index)))
   
   lrd <- matrix(0.0, nrow=nrow(nn.res$nn.index), ncol=(k.max - k.min + 1))
   for(cur.idx in seq_len(ncol(lrd))){
     cur.k <- cur.idx + k.min - 1
-    cur.k.dist <- nn.res$nn.dist[, cur.k]
+    cur.k.dist <- nn.res.mod$nn.dist[, cur.k]
     k.dist.mat <- matrix(cur.k.dist[c(nn.res$nn.index[, seq_len(cur.k)])],
       nrow=nrow(nn.res$nn.index))
     stopifnot(all(dim(k.dist.mat) == c(nrow(nn.res$nn.index), cur.k)))
@@ -36,8 +38,6 @@ NULL
     reach.dist <- pmax(k.dist.mat, nn.res$nn.dist[, seq_len(cur.k)])
     lrd[, cur.idx] <- 1 / rowMeans(reach.dist)
   }
-  # たまに本当に同一のデータがあり k=2 の場合とかだと Inf になる
-  # この場合は 1 にする（最終的な lof の値が 1 となるようにしている）
   lrd[!is.finite(lrd)] <- 1
   return(lrd)
 }
@@ -81,11 +81,6 @@ lofmodel <- function(data, k.min=1, k.max=10, knn.args=list()){
 }
 
 .calc.lof.from.lrd <- function(lrd.self, nn.res, model){
-  # lof を計算する
-  # lrd.mat
-  # nn.res
-  # model
-  # 
   k.min <- model$k.min
   k.max <- model$k.max
   lrd.data <- model$lrd
@@ -106,15 +101,12 @@ lofmodel <- function(data, k.min=1, k.max=10, knn.args=list()){
 }
 
 .calc.lof.self <- function(model){
-  # 学習データ自身に対する lof を計算する
-  # model lofmodel の返り値
   stopifnot(is(model, .LOFMODEL.CLSNAME))
   lof <- .calc.lof.from.lrd(model$lrd, model$nn.res, model)
   return(lof)
 }
 
 .calc.lof.other <- function(model, query){
-  # 別データに対する lof を計算する
   stopifnot(is(model, .LOFMODEL.CLSNAME))
   stopifnot(ncol(query) == ncol(model$data))
 
@@ -124,7 +116,7 @@ lofmodel <- function(data, k.min=1, k.max=10, knn.args=list()){
   stopifnot(all(dim(nn.res$nn.index) == c(nrow(query), model$k.max)))
   stopifnot(all(dim(nn.res$nn.dist) == c(nrow(query), model$k.max)))
 
-  lrd <- .calc.lrd(nn.res, model$k.min, model$k.max)
+  lrd <- .calc.lrd(nn.res, model$k.min, model$k.max, model$nn.res)
   lof <- .calc.lof.from.lrd(lrd, nn.res, model)
   return(lof)  
 }
