@@ -4,12 +4,14 @@ Date: 2016-08-16
 Title: Local Outlier Factor for R
 Authors@R: c(
     person("Shunsuke", "Naruse", ,"nkjnpi@gmail.com", c("aut", "cre")))
+Author: Shunsuke Naruse
+Maintainer: Shunsuke Naruse <nkjnpi@gmail.com>
 Depends:
     R (>= 3.3.1),
     FNN,
     parallel,
     methods
-Suggests: 
+Suggests: testthat, Rlof
 Description: Local Outlier Factor for R.
 License: MIT + file LICENSE
 URL: https://github.com/5hun/lofr
