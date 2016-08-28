@@ -1,4 +1,4 @@
-# lofr: Local Outlier Factor for R
+# lofr: A R package for Local Outlier Factor
 
 ## Installation
 
