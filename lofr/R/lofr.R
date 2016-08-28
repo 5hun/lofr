@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-#' lofr: Local Outlier Factor for R
+#' lofr: A R package for Local Outlier Factor
 #'
 #' @docType package
 #' @name lofr
