@@ -196,10 +196,14 @@ predict.lofmodel <- function(object, newdata=NULL, nparallel=1, ...){
     split.factor <- ceiling(seq_len(nrow(newdata)) / (nrow(newdata) / nparallel))
     splitted <- split(newdata, split.factor, drop=FALSE)
     cl <- makeCluster(nparallel)
-    clusterExport(cl, 
-        c(".LOFMODEL.CLSNAME", "get.knnx", ".calc.lrd", ".calc.lof.from.lrd"))
-    results <- parLapply(cl, splitted, .calc.lof.other, model=object)
-    stopCluster(cl)
+    results <- tryCatch({
+      clusterExport(cl, 
+          c(".LOFMODEL.CLSNAME", "get.knnx", ".calc.lrd", ".calc.lof.from.lrd"))
+      results <- parLapply(cl, splitted, .calc.lof.other, model=object)
+      results
+    }, finally={
+      stopCluster(cl)
+    })
     return(do.call(rbind, results))
   }
 }
