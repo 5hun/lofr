@@ -9,7 +9,7 @@ Depends:
     FNN,
     parallel,
     methods
-Suggests: testthat, Rlof
+Suggests: Rlof, RUnit
 Description: A R package for Local Outlier Factor.
 License: MIT + file LICENSE
 URL: https://github.com/5hun/lofr
