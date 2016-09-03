@@ -4,8 +4,8 @@
 \name{lofr}
 \alias{lofr}
 \alias{lofr-package}
-\title{lofr: Local Outlier Factor for R}
+\title{lofr: A R package for Local Outlier Factor}
 \description{
-lofr: Local Outlier Factor for R
+lofr: A R package for Local Outlier Factor
 }
 

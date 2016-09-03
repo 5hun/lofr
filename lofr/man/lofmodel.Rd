@@ -4,7 +4,7 @@
 \alias{lofmodel}
 \title{Make a model object for \code{\link{predict.lofmodel}}.}
 \usage{
-lofmodel(data, k.min = 1, k.max = 10, knn.args = list())
+lofmodel(data, k.min = 1, k.max = 10, knn.args = list(), nparallel = 1)
 }
 \arguments{
 \item{data}{a matrix.}
@@ -14,6 +14,8 @@ lofmodel(data, k.min = 1, k.max = 10, knn.args = list())
 \item{k.max}{maximal value of k.}
 
 \item{knn.args}{optinal arguments for \code{\link{get.knn}}.}
+
+\item{nparallel}{optional, the number of cores to be used for parallel computing.}
 }
 \value{
 a list with class "lodmodel".

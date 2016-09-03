@@ -14,6 +14,40 @@ NULL
 
 .LOFMODEL.CLSNAME <- "lofmodel"
 
+.split.data <- function(data, nsplit){
+  split.factor <- ceiling(seq_len(nrow(data)) / (nrow(data) / nsplit))
+  ret <- list()
+  for(j in unique(split.factor)){
+    ret <- c(ret, list(data[split.factor == j, , drop=FALSE]))
+  }
+  return(ret)
+}
+
+.get.knn.parallel <- function(data, k, nparallel, knn.args=list()){
+  splitted <- .split.data(data, nparallel)
+  cl <- makeCluster(nparallel)
+  results <- tryCatch({
+    clusterExport(cl, "get.knnx")
+    results <- parLapply(cl, splitted, 
+        function(query, data, k, knn.args){
+          knn.args$data  = data
+          knn.args$query = query
+          knn.args$k     = k
+          return(do.call(get.knnx, knn.args))
+        }, data=data, k=k+1, knn.args=knn.args)
+    results
+  }, finally = {
+    stopCluster(cl)
+  })
+  ret <- list(
+    nn.index = do.call(rbind, 
+        lapply(results, function(x) { x$nn.index[, 2:(k+1), drop=FALSE] })),
+    nn.dist  = do.call(rbind,
+        lapply(results, function(x) { x$nn.dist[,  2:(k+1), drop=FALSE] }))
+  )
+  return(ret)
+}
+
 .calc.lrd <- function(nn.res, k.min, k.max, nn.res.mod=NULL){
   stopifnot(k.min <= k.max)
   stopifnot(k.min >= 1)
@@ -48,6 +82,7 @@ NULL
 #' @param k.min mininum value of k.
 #' @param k.max maximal value of k.
 #' @param knn.args optinal arguments for \code{\link{get.knn}}.
+#' @param nparallel optional, the number of cores to be used for parallel computing.
 #'
 #' @return a list with class "lodmodel".
 #'
@@ -62,14 +97,20 @@ NULL
 #' lof2 <- predict(mod, dat2) # local outlier factor for dat2
 #'
 #' @export
-lofmodel <- function(data, k.min=1, k.max=10, knn.args=list()){
+lofmodel <- function(data, k.min=1, k.max=10, knn.args=list(),
+     nparallel=1){
   stopifnot(k.min <= k.max)
   stopifnot(k.min >= 1)
   stopifnot(k.max < nrow(data))
 
-  knn.args$data = data
-  knn.args$k = k.max
-  nn.res <- do.call(get.knn, knn.args)
+  if(nparallel == 1){
+    knn.args$data = data
+    knn.args$k = k.max
+    nn.res <- do.call(get.knn, knn.args)
+  }else{
+    nn.res <- .get.knn.parallel(data, k.max, nparallel, knn.args)
+  }
+    
   stopifnot(all(dim(nn.res$nn.index) == c(nrow(data), k.max)))
   stopifnot(all(dim(nn.res$nn.dist) == c(nrow(data), k.max)))
 
