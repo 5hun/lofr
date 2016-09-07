@@ -109,6 +109,8 @@ lofmodel <- function(data, k.min=1, k.max=10, knn.args=list(),
     nn.res <- do.call(get.knn, knn.args)
   }else{
     nn.res <- .get.knn.parallel(data, k.max, nparallel, knn.args)
+    knn.args$data = data
+    knn.args$k = k.max
   }
     
   stopifnot(all(dim(nn.res$nn.index) == c(nrow(data), k.max)))
@@ -193,8 +195,7 @@ predict.lofmodel <- function(object, newdata=NULL, nparallel=1, ...){
   if(nparallel == 1){
     return(.calc.lof.other(object, newdata))
   }else{
-    split.factor <- ceiling(seq_len(nrow(newdata)) / (nrow(newdata) / nparallel))
-    splitted <- split(newdata, split.factor, drop=FALSE)
+    splitted <- .split.data(newdata, nparallel)
     cl <- makeCluster(nparallel)
     results <- tryCatch({
       clusterExport(cl, 

@@ -9,6 +9,7 @@ test.lofmodel <- function(){
     mod2 <- lofmodel(dat, k.min=2, k.max=10, nparallel=2)
     checkEquals(mod$nn.res$nn.index, mod2$nn.res$nn.index)
     checkEquals(mod$nn.res$nn.dist, mod2$nn.res$nn.dist)
+    checkEquals(mod$knn.args, mod2$knn.args)
 }
 
 test.predict.lofmodel <- function(){
